@@ -1,131 +1,169 @@
 <html>
-    <script>
+	<script>
 
-        // text document contents should be a single line that is only a number
-        // Otherwise it's pretty straight forward. Some color options below.
-        //
-        // *** Sorry, Documentation's gone for until I get the rest sorted out.
-        // *** Most everything you'd want to change is in the variables below.  No need ot dig through the JS, CSS, or HTML
+		// text document contents should be a single line that is only a number
+		// Otherwise it's pretty straight forward. Some color options below.
+		//
+		// *** Sorry, Documentation's gone for until I get the rest sorted out.
+		// *** Most everything you'd want to change is in the variables below.No need ot dig through the JS, CSS, or HTML
 
-        var BodyBackground = "#999999";
-        var BarHeight = 45;
-        var BarBackground = "#00FF00";
-        var BarRadius = "20px";
-        var BarProgress = "#FF0000";
-        var BarBead = "#FFFFFF";
-		var BarBeadVisible = true;
-        var BarRefresh = 1000;
-        var ValueMax = 100;
-        var DemoEnable = true;
+		var BodyBackground = "#999999";
+		var BarHeight = 50;
+		var BarBackground = [
+			[0,'#00FF00'],
+		];
+		var BarRadius = 25;
+		var BarProgress = [
+			[0,'#FFFFFF'],
+			[20,'#00FFFF'],
+			[40,'#FF00FF'],
+			[60,'#FFFF00'],
+			[80,'#F0FF0F'],
+		];
+		var BeadColor = [
+			[0,'#FFFFFF'],
+			[20,'#0000FF'],
+			[40,'#00FF00'],
+			[60,'#FF0000'],
+			[80,'#F0FF0F'],
+		];
+		var BeadVisible = true;
+		var BeadWidth = BarHeight;
+		var BarRefresh = 1000;
+		var ValueMax = 100;
+		var DemoEnable = true;
 
-        function Setup() {
-        	document.body.style.background = BodyBackground;
-        	document.getElementById("TxtMax").value = ValueMax;
+		function Setup() {
+			document.body.style.background = BodyBackground;
+			document.getElementById("TxtMax").value = ValueMax;
 
-        	document.getElementById("BarHundred").style.background = BarBackground;
-        	document.getElementById("BarHundred").style.height = BarHeight + "px";
-        	document.getElementById("BarHundred").style.borderRadius = BarRadius;
+			document.getElementById("BarHundred").style.background = BarBackground;
+			document.getElementById("BarHundred").style.height = BarHeight + "px";
+			document.getElementById("BarHundred").style.borderRadius = BarRadius + "px";
 
-            document.getElementById("BarValue").style.background = BarProgress;
-            document.getElementById("BarValue").style.borderRadius = BarRadius;
+			document.getElementById("BarValue").style.background = BarProgress[0][1];
+			document.getElementById("BarValue").style.borderRadius = BarRadius + "px";
 
-            document.getElementById("BarBead").style.background = BarBead;
-            document.getElementById("BarBead").style.borderRadius = BarRadius;
-            document.getElementById("BarBead").style.width = BarHeight + "px";
-            if (!BarBeadVisible) {
-            	document.getElementById("BarBead").style.visibility = "hidden";
-            }
+			document.getElementById("BarBead").style.background = BeadColor[0][1];
+			document.getElementById("BarBead").style.borderRadius = BarRadius + "px";
+			document.getElementById("BarBead").style.width = BeadWidth + "px";
+			if (!BeadVisible) {
+				document.getElementById("BarBead").style.visibility = "hidden";
+			}
 
-            DemoMode();
-        }
+			DemoMode();
+		}
 
-        function DemoMode() {
-        	if (typeof(BlobText) == "undefined" && DemoEnable) {
-	        	if (document.getElementById("BarValue").style.width == (BarHeight + "px")) {
-	        		document.getElementById("BarValue").style.width = "100%";
-	        	} else {
-        			document.getElementById("BarValue").style.width = BarHeight + "px";
-	        	}
-	            window.setTimeout(DemoMode, 5000);
-        	}
-        }
+		function DemoMode() {
+			if (typeof(BlobText) == "undefined" && DemoEnable) {
+				if (document.getElementById("BarValue").style.width == (BeadWidth + "px")) {
+					document.getElementById("BarValue").style.width = "100%";
+				} else {
+					document.getElementById("BarValue").style.width = BeadWidth + "px";
+				}
+				window.setTimeout(DemoMode, 5000);
+			}
+		}
 
-        function Bootstrap() {
-        	if (!isNaN(parseFloat(document.getElementById("TxtMax").value))) {
-	            ValueMax = document.getElementById('TxtMax').value;
-	            BlobText = event.target;
-	            document.getElementById("WindowsSettings").style.visibility = "hidden";
-	            RefreshTimer();
-	        } else {
-	        	document.getElementById("FileLocation").value = '';
-	        }
-        }
+		function Bootstrap() {
+			if (!isNaN(parseFloat(document.getElementById("TxtMax").value))) {
+				ValueMax = document.getElementById('TxtMax').value;
+				BlobText = event.target;
+				document.getElementById("WindowsSettings").style.visibility = "hidden";
+				RefreshTimer();
+			} else {
+				document.getElementById("FileLocation").value = '';
+			}
+		}
 
-        function RefreshTimer()
-        {
-            readTextFile();
-            window.setTimeout(RefreshTimer, BarRefresh);
-        }
+		function RefreshTimer()
+		{
+			readTextFile();
+			window.setTimeout(RefreshTimer, BarRefresh);
+		}
 
-        function readTextFile(file)
-        {
-            var reader = new FileReader();
-            reader.onload = function()
-            {
-                var text = reader.result;
-                if(!isNaN(parseFloat(text))) {
-	                text = (text / ValueMax * 100);
-	                if (text > 100) { text = 100; }
-	                if (text < 0) { text = 0; }
-	                if ((document.getElementById("BarHundred").clientWidth * text / 100) < BarHeight) {
-	                	document.getElementById("BarValue").style.width = BarHeight + "px";
-	                } else {
-	                	document.getElementById("BarValue").style.width = text + "%";
-	                }
-                }
-            }
-            reader.readAsText(BlobText.files[0]);
-        }
-    </script>
+		function ColorPicker(ColorTable, Percentage) {
+			for (var a = 0, len = ColorTable.length; a < len; a++) {
+				if (Percentage > ColorTable[a][0]) {
+						var ColorTemp = ColorTable[a][1];
+				}
+			}
+			return ColorTemp;
+		}
 
-    <style>
-        #BarHundred {
-          width: 90%;
-          display: inline-block;
-          margin: 50px;
-        }
+		function readTextFile(file)
+		{
+			var reader = new FileReader();
+			reader.onload = function()
+			{
+				var text = reader.result;
+				if(!isNaN(parseFloat(text))) {
+					text = (text / ValueMax * 100);
+					if (text > 100) { text = 100; }
+					if (text < 0) { text = 0; }
+					if (BeadVisible) {
+						document.getElementById("BarBead").style.background = ColorPicker(BeadColor, text);
+					}
+					document.getElementById("BarValue").style.background = ColorPicker(BarProgress, text);
+					document.getElementById("BarHundred").style.background = ColorPicker(BarBackground, text);
+					if ((document.getElementById("BarHundred").clientWidth * text / 100) < BeadWidth) {
+						document.getElementById("BarValue").style.width = BeadWidth + "px";
+					} else {
+						document.getElementById("BarValue").style.width = text + "%";
+					}
+				}
+			}
+			reader.readAsText(BlobText.files[0]);
+		}
+	</script>
 
-        #BarValue {
-          width: 50%;
-          height: 100%;
-          display: inline-block;
-          border-radius: 5px;
-          -webkit-transition: 0.5s linear;
-          -moz-transition: 0.5s linear;
-          -o-transition: 0.5s linear;
-          transition: 0.5s linear;
-          -webkit-transition-property: width, background-color;
-          -moz-transition-property: width, background-color;
-          -o-transition-property: width, background-color;
-          transition-property: width, background-color;
-        }
-        #BarBead {
-          height: 100%;
-          display: inline-block;
-          margin: 0px;
-          float: right;
-        }
-    </style>
+	<style>
+		#BarHundred {
+			width: 90%;
+			display: inline-block;
+			margin: 50px;
+		}
+
+		#BarValue {
+			width: 50%;
+			height: 100%;
+			display: inline-block;
+			border-radius: 5px;
+			-webkit-transition: 0.5s ease-in-out;
+			-moz-transition: 0.5s ease-in-out;
+			-o-transition: 0.5s ease-in-out;
+			transition: 0.5s ease-in-out;
+			-webkit-transition-property: width, background-color;
+			-moz-transition-property: width, background-color;
+			-o-transition-property: width, background-color;
+			transition-property: width, background-color;
+		}
+
+		#BarBead {
+			height: 100%;
+			display: inline-block;
+			margin: 0px;
+			float: right;
+			-webkit-transition: 0.5s ease-in-out;
+			-moz-transition: 0.5s ease-in-out;
+			-o-transition: 0.5s ease-in-out;
+			transition: 0.5s ease-in-out;
+			-webkit-transition-property: background-color;
+			-moz-transition-property: background-color;
+			-o-transition-property: background-color;
+			transition-property: background-color;
+		}
+	</style>
 
 	<body onload="Setup()">
-    	<div id="BarHundred">
-        	<div id="BarValue">
-        		<div id="BarBead"></div>
-        	</div>
-    	</div>
-        <div id="WindowsSettings">
-            100% Value: <input id="TxtMax" type="text">
-            <input type="file" id="FileLocation" onchange="Bootstrap()">
-        </div>
-    </body>
+		<div id="BarHundred">
+			<div id="BarValue">
+				<div id="BarBead"></div>
+			</div>
+		</div>
+		<div id="WindowsSettings">
+			100% Value: <input id="TxtMax" type="text">
+			<input type="file" id="FileLocation" onchange="Bootstrap()">
+		</div>
+	</body>
 <html>
