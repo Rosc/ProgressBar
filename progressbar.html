@@ -3,9 +3,11 @@
 
         //
         //
-        //text document contents should be a single line that is only a number
+        // text document contents should be a single line that is only a number
+        // Otherwise it's pretty straight forward. Some color options below.
         //
-        //
+        // *** This is a slightly updated version. Some transition animation was added so the bar doesn't jump to the next increment.
+
 
         var BarBackground = "#00FF00";
         // Choose your bar background color
@@ -62,6 +64,14 @@
           display: inline-block;
           margin: 0px;
           border-radius: 5px;
+          -webkit-transition: 0.4s linear;
+          -moz-transition: 0.4s linear;
+          -o-transition: 0.4s linear;
+          transition: 0.4s linear;
+          -webkit-transition-property: width;
+          -moz-transition-property: width;
+          -o-transition-property: width;
+          transition-property: width;
         }
     </style>
     <body>
