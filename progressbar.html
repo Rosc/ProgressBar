@@ -1,0 +1,78 @@
+<html>
+    <script>
+
+        //
+        //
+        //text document contents should be a single line that is only a number
+        //
+        //
+
+        var BarBackground = "#00FF00";
+        // Choose your bar background color
+        var BarProgress = "#FF0000";
+        //Choose your bar progress color
+
+        var BarRefresh = 1000;
+        //Refresh time in miliseconds. One second is probably fine.  Adjust if it's taxing your system too heavily.
+
+        function StartTimer()
+        {
+            Maxvalue = document.getElementById('txtMax').value;
+            document.getElementById("loader").style.visibility = "hidden";
+            input = event.target;
+            document.getElementById("WholeBar").style.background = BarBackground;
+            document.getElementById("ProgressBar").style.background = BarProgress;
+            RefreshTimer();
+        }
+        function RefreshTimer()
+        {
+            readTextFile();
+            window.setTimeout(RefreshTimer, BarRefresh);
+        }
+
+        function readTextFile(file)
+        {
+            var reader = new FileReader();
+            reader.onload = function(){
+                var text = reader.result;
+                text = (text / Maxvalue * 100);
+                if (text > 100) { text = 100; }
+                if (text < 0) { text = 0; }
+                document.getElementById("ProgressBar").style.width = text + "%";
+            }
+            reader.readAsText(input.files[0]);
+        }
+    </script>
+    <style>
+        html,
+        body {
+            background: #999999;
+        }
+
+        .fullbar {
+          width: 90%;
+          height: 90px;
+          display: inline-block;
+          margin: 50px;
+          border-radius: 5px;
+        }
+        .pctbar {
+          width: 50%;
+          height: 100%;
+          display: inline-block;
+          margin: 0px;
+          border-radius: 5px;
+        }
+    </style>
+    <body>
+        <div class="container">
+          <div class="fullbar" id="WholeBar">
+              <div class="pctbar" id="ProgressBar"></div>
+          </div>
+        </div>
+        <div id="loader">
+            100% Value: <input id="txtMax" type="text" value="100">
+            <input type="file" id="fileInput" onchange="StartTimer()">
+        </div>
+    </body>
+<html>
