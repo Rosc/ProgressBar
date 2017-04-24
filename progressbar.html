@@ -1,31 +1,66 @@
 <html>
     <script>
 
-        //
-        //
         // text document contents should be a single line that is only a number
         // Otherwise it's pretty straight forward. Some color options below.
         //
-        // *** This is a slightly updated version. Some transition animation was added so the bar doesn't jump to the next increment.
+        // *** Sorry, Documentation's gone for until I get the rest sorted out.
+        // *** Most everything you'd want to change is in the variables below.  No need ot dig through the JS, CSS, or HTML
 
-
+        var BodyBackground = "#999999";
+        var BarHeight = 45;
         var BarBackground = "#00FF00";
-        // Choose your bar background color
+        var BarRadius = "20px";
         var BarProgress = "#FF0000";
-        //Choose your bar progress color
-
+        var BarBead = "#FFFFFF";
+		var BarBeadVisible = true;
         var BarRefresh = 1000;
-        //Refresh time in miliseconds. One second is probably fine.  Adjust if it's taxing your system too heavily.
+        var ValueMax = 100;
+        var DemoEnable = true;
 
-        function StartTimer()
-        {
-            Maxvalue = document.getElementById('txtMax').value;
-            document.getElementById("loader").style.visibility = "hidden";
-            input = event.target;
-            document.getElementById("WholeBar").style.background = BarBackground;
-            document.getElementById("ProgressBar").style.background = BarProgress;
-            RefreshTimer();
+        function Setup() {
+        	document.body.style.background = BodyBackground;
+        	document.getElementById("TxtMax").value = ValueMax;
+
+        	document.getElementById("BarHundred").style.background = BarBackground;
+        	document.getElementById("BarHundred").style.height = BarHeight + "px";
+        	document.getElementById("BarHundred").style.borderRadius = BarRadius;
+
+            document.getElementById("BarValue").style.background = BarProgress;
+            document.getElementById("BarValue").style.borderRadius = BarRadius;
+
+            document.getElementById("BarBead").style.background = BarBead;
+            document.getElementById("BarBead").style.borderRadius = BarRadius;
+            document.getElementById("BarBead").style.width = BarHeight + "px";
+            if (!BarBeadVisible) {
+            	document.getElementById("BarBead").style.visibility = "hidden";
+            }
+
+            DemoMode();
         }
+
+        function DemoMode() {
+        	if (typeof(BlobText) == "undefined" && DemoEnable) {
+	        	if (document.getElementById("BarValue").style.width == (BarHeight + "px")) {
+	        		document.getElementById("BarValue").style.width = "100%";
+	        	} else {
+        			document.getElementById("BarValue").style.width = BarHeight + "px";
+	        	}
+	            window.setTimeout(DemoMode, 5000);
+        	}
+        }
+
+        function Bootstrap() {
+        	if (!isNaN(parseFloat(document.getElementById("TxtMax").value))) {
+	            ValueMax = document.getElementById('TxtMax').value;
+	            BlobText = event.target;
+	            document.getElementById("WindowsSettings").style.visibility = "hidden";
+	            RefreshTimer();
+	        } else {
+	        	document.getElementById("FileLocation").value = '';
+	        }
+        }
+
         function RefreshTimer()
         {
             readTextFile();
@@ -35,54 +70,62 @@
         function readTextFile(file)
         {
             var reader = new FileReader();
-            reader.onload = function(){
+            reader.onload = function()
+            {
                 var text = reader.result;
-                text = (text / Maxvalue * 100);
-                if (text > 100) { text = 100; }
-                if (text < 0) { text = 0; }
-                document.getElementById("ProgressBar").style.width = text + "%";
+                if(!isNaN(parseFloat(text))) {
+	                text = (text / ValueMax * 100);
+	                if (text > 100) { text = 100; }
+	                if (text < 0) { text = 0; }
+	                if ((document.getElementById("BarHundred").clientWidth * text / 100) < BarHeight) {
+	                	document.getElementById("BarValue").style.width = BarHeight + "px";
+	                } else {
+	                	document.getElementById("BarValue").style.width = text + "%";
+	                }
+                }
             }
-            reader.readAsText(input.files[0]);
+            reader.readAsText(BlobText.files[0]);
         }
     </script>
-    <style>
-        html,
-        body {
-            background: #999999;
-        }
 
-        .fullbar {
+    <style>
+        #BarHundred {
           width: 90%;
-          height: 90px;
           display: inline-block;
           margin: 50px;
-          border-radius: 5px;
         }
-        .pctbar {
+
+        #BarValue {
           width: 50%;
           height: 100%;
           display: inline-block;
-          margin: 0px;
           border-radius: 5px;
-          -webkit-transition: 0.4s linear;
-          -moz-transition: 0.4s linear;
-          -o-transition: 0.4s linear;
-          transition: 0.4s linear;
-          -webkit-transition-property: width;
-          -moz-transition-property: width;
-          -o-transition-property: width;
-          transition-property: width;
+          -webkit-transition: 0.5s linear;
+          -moz-transition: 0.5s linear;
+          -o-transition: 0.5s linear;
+          transition: 0.5s linear;
+          -webkit-transition-property: width, background-color;
+          -moz-transition-property: width, background-color;
+          -o-transition-property: width, background-color;
+          transition-property: width, background-color;
+        }
+        #BarBead {
+          height: 100%;
+          display: inline-block;
+          margin: 0px;
+          float: right;
         }
     </style>
-    <body>
-        <div class="container">
-          <div class="fullbar" id="WholeBar">
-              <div class="pctbar" id="ProgressBar"></div>
-          </div>
-        </div>
-        <div id="loader">
-            100% Value: <input id="txtMax" type="text" value="100">
-            <input type="file" id="fileInput" onchange="StartTimer()">
+
+	<body onload="Setup()">
+    	<div id="BarHundred">
+        	<div id="BarValue">
+        		<div id="BarBead"></div>
+        	</div>
+    	</div>
+        <div id="WindowsSettings">
+            100% Value: <input id="TxtMax" type="text">
+            <input type="file" id="FileLocation" onchange="Bootstrap()">
         </div>
     </body>
 <html>
